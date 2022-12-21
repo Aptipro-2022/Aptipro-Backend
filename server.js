@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const cors= require('cors');
 const jwt = require('jsonwebtoken')
 const User = require('./models/userregistration')
-const PORT = 3000
+const PORT = process.env.PORT || 3000;
 
 const app = express()
 app.use(cors());
@@ -70,5 +70,5 @@ app.listen(PORT, () => {
     // .catch((err) => {
     //     console.error(err);
     // });
-    console.log("server running on port 3000");
+    console.log('server running on port ' + PORT);
 })
