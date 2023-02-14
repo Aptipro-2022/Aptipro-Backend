@@ -2,8 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors= require('cors');
 const jwt = require('jsonwebtoken')
-const User = require('./models/userregistration')
+let Userdetails = require('./models/userregistration');
 const PORT = process.env.PORT || 3000;
+let User = require('./models/user');
 
 const app = express()
 app.use(bodyParser.json())
@@ -12,10 +13,58 @@ app.use(cors());
 var url = 'mongodb://127.0.0.1:27017';
 var MongoClient = require('mongodb').MongoClient;
 
+app.get('/userdetails/:phone',function(req, res){  
+    res.send("api hitted");
+    let details; 
+    console.log("api hitted");
+    console.log(req.params);
+    MongoClient.connect(url, {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        useUnifiedTopology: true
+    }, function(err, db) {
+        var dbo = db.db("Aptipro");
+        if (err) throw err;
+        console.log("Switched to "+db.databaseName+" database");
+        dbo.collection("Userdetails").findOne(req.params, function(err, result) {
+            if (err) throw err;
+            else {
+                console.log(result);
+                res.send(result);
+                db.close();
+            }
+        });
+    })
+})
 
-app.post('/userdetails',function(req,res){
+app.get('/questions',function(req, res){  
+    console.log("questions hitted")
+    MongoClient.connect(url, {
+        useNewUrlParser: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+        useUnifiedTopology: true
+    }, function(err, db) {
+        var dbo = db.db("Aptipro");
+        if (err) throw err;
+        console.log("Switched to "+db.databaseName+" database");
+        dbo.collection("Questions").find(function(err, result) {
+            if (err) throw err;
+            else {
+                console.log(result);
+                res.send(result);
+                db.close();
+            }
+        });
+    })
+})
+
+
+
+app.post('/addquestion',function(req,res){
     
-    let user;
+    let questiondetails = req.body;
     console.log(req.body);
     MongoClient.connect(url, {
         useNewUrlParser: true,
@@ -26,18 +75,19 @@ app.post('/userdetails',function(req,res){
         var dbo = db.db("Aptipro");
         if (err) throw err;
         console.log("Switched to "+db.databaseName+" database");
-        dbo.collection("Userdetails").findOne(req.body, function(err, result) {
+        dbo.collection("Questions").insertOne(questiondetails, function(err, res) {
             if (err) throw err;
-            user = result;
-            console.log(user);
-            res.send(user);
+            console.log(res.insertedCount+" documents inserted");
             db.close();
+            res.send("200 ok");
         });
     })
 })
 
 app.post("/login",function(req,res){
     let details = req.body;
+    User.phone = req.phone;
+    console.log(User);
     console.log(details);
 
     MongoClient.connect(url, {
@@ -66,6 +116,9 @@ app.post("/register",function(req,res){
     let details = req.body;
     console.log(details);
 
+    User = req.body;
+    console.log(User);
+
     MongoClient.connect(url, {
         useNewUrlParser: true,
         useCreateIndex: true,
@@ -75,16 +128,22 @@ app.post("/register",function(req,res){
         var dbo = db.db("Aptipro");
         if (err) throw err;
         console.log("Switched to "+db.databaseName+" database");
-    
-        dbo.collection("Userdetails").insertOne(details, function(err, res) {
+
+        dbo.collection("Userdetails").findOne(req.body, function(err, result) {
+            console.log(result);
             if (err) throw err;
-            console.log(res.insertedCount+" documents inserted");
-            db.close();
+            else if ( result == null ) {
+                result = details;
+                dbo.collection("Userdetails").insertOne(details, function(err, res) {
+                    if (err) throw err;
+                    console.log(res.insertedCount+" documents inserted");
+                    db.close();
+                });
+            }
+            res.send(result);
         });
     });
-    res.status(200).send("ok")
 })
-
 
 
 app.listen(PORT, () => {
