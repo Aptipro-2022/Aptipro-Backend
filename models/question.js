@@ -2,16 +2,52 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const questionModel = new Schema({
-  question_id: {
-    type: Number,
-    required: true,
+  questionid: {
+    type: String,
+    required : true
   },
   question: {
     type: String,
-    required: true,
+    required : true
   },
+  option1 : {
+    type : String,
+    required : true
+  },
+  option2 : {
+    type : String,
+    required : true
+  },
+  option3 : {
+    type : String,
+    required : true
+  },
+  option4 : {
+    type : String,
+    required : true
+  },
+  hint1 : {
+    type : String,
+    required : true
+  },
+  hint2 : {
+    type : String,
+    required : true
+  },
+  hint3 : {
+    type : String,
+    required : true
+  },
+  hint4 : {
+    type : String,
+    required : true
+  },
+  answer : {
+    type : String,
+    required : true
+  }
 });
 
-const model = mongoose.model("questions", questionModel);
+const questionsModel = mongoose.model("Questions", questionModel);
 
-module.exports = model;
+module.exports = questionsModel;
