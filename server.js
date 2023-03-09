@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 let Userdetails = require("./models/userregistration");
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 let User = require("./models/user");
 const app = require("./app");
 app.use(bodyParser.json());

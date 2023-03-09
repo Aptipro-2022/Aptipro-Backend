@@ -3,8 +3,7 @@ var mongoDB = '';
 if(process.env.PORT == 3000) {
   mongoDB = "mongodb://127.0.0.1:27017/Aptipro";
 } else {
-  mongoDB =
-  "mongodb+srv://sharad:sharad123@cluster0.iruetsm.mongodb.net/NodeJsTask?retryWrites=true&w=majority";
+  mongoDB = "mongodb+srv://codingoclub:NQBZT6pPaSh1EbGA@cluster0.osdzcoe.mongodb.net/?retryWrites=true&w=majority"
 }
 mongoose.set("strictQuery", false);
 console.log(mongoDB);
